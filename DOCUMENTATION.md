@@ -68,19 +68,4 @@ Be ready to explain how your data relates.
     *   `category`, `priority`: Strings used by UI to generate contextual pill-colors.
     *   `remindersSent`: An integrity counter checking to make sure over-due Cron Notifications max out at 3 so we don't spam users.
 
----
 
-## 🧪 4. Expected Evaluation Questions & Test Cases
-
-If they ask you to demonstrate the functionality, show these three flows:
-
-### 1. Show the NLP System
-*   **What to do**: Type "Buy groceries at 5 PM for 1 hour".
-*   **What to say**: *"Notice how the system didn't just save my text directly. The `chrono-node` helper dynamically parsed '5 PM' into a true Javascript ISO Date object, effectively auto-closing the `endDate` bound via math."*
-
-### 2. Show the OTP Flow
-*   **What to do**: Log in using the email prompt.
-*   **What to say**: *"Our authentication uses OTPs. It issues a temporary 6-digit code validated by the Express middleware backend. If successful, our React UI safely stores a JSON Web Token ensuring completely stateless node.js APIs."*
-
-### 3. Explain the Notification Architecture
-*   **What to say**: *"Background Notifications rely on a continuous node-server process. We built a Cron-Engine in `scheduler.js` running every single minute. It reads the database securely with time-based boundary conditions, maps tasks to subscribed user devices, and pushes the payload without the page needing to remain open using Web Service Workers."*
