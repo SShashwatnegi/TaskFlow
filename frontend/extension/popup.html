@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>TaskFlow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+    body {
+      width: 300px;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 16px;
+      background-color: #0a0a0c;
+      color: #fff;
+    }
+    h3 {
+      margin-top: 0;
+      margin-bottom: 12px;
+      font-weight: 600;
+      background: linear-gradient(135deg, #a78bfa 0%, #6366f1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    textarea {
+      width: 100%;
+      height: 60px;
+      padding: 10px;
+      box-sizing: border-box;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      resize: none;
+      outline: none;
+      margin-bottom: 12px;
+    }
+    textarea:focus {
+      border-color: #6366f1;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #6366f1;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #4f46e5;
+    }
+    #status {
+      margin-top: 10px;
+      font-size: 0.85rem;
+      text-align: center;
+      min-height: 16px;
+    }
+    #token-section {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    #token-input {
+      padding: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+  <h3>TaskFlow</h3>
+  
+  <div id="auth-view" style="display: none;">
+    <div style="font-size: 0.8rem; color: #888; margin-bottom: 8px;">Please enter your JWT Token to sync:</div>
+    <div id="token-section">
+      <input type="password" id="token-input" placeholder="Paste token here..." />
+      <button id="save-token-btn" style="background: rgba(255,255,255,0.1);">Save Token</button>
+    </div>
+  </div>
+
+  <div id="task-view" style="display: none;">
+    <textarea id="task-input" placeholder="E.g. Pay bills by 5pm tomorrow..."></textarea>
+    <button id="add-btn">Add Task</button>
+  </div>
+  
+  <div id="status"></div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
