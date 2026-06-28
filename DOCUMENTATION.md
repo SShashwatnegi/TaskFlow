@@ -19,10 +19,10 @@
 
 ## 📁 2. Folder and File Breakdown
 
-You can walk the evaluator through your codebase using the following structure.
+
 
 ### `🌍 frontend/`
-This is your React + Vite application. It provides the premium UI the user interacts with.
+This is React + Vite application. It provides the premium UI the user interacts with.
 
 *   `src/components/SchedulerComponents.jsx`: **(Crucial File)** This handles the visual Calendar (MiniCal, MonthView, WeekView), Natural Language Input processing, and Notification Bell UI. This file dictates how users interact with their days visually.
 *   `src/components/Dashboard.jsx`: The main post-login layout container that orchestrates fetching tasks and passing them down to the SchedulerComponents.
@@ -48,7 +48,7 @@ This is the Node.js / Express.js server responsible for database operations and 
 *   `config/db.js`: Contains the logic to manage connection variables for MongoDB.
 
 ### `🧩 extension/`
-Your custom Chrome Extension ensuring quick capture.
+
 
 *   `manifest.json`: The core settings file Chrome needs to understand what permissions and scripts to run (Uses Manifest V3 architecture).
 *   `popup.html` & `popup.js`: The UI and logic script when the user clicks the extension icon. It intercepts `ss_token` (JWT token) located in Chrome's Background Extension Storage to securely inject fast notes straight into the backend's `taskRoute`.
@@ -57,7 +57,7 @@ Your custom Chrome Extension ensuring quick capture.
 
 ## 🗄️ 3. Database Schema
 
-Be ready to explain how your data relates.
+
 *   **User Collection (`User.js`)**:
     *   `email`: Distinct identifier.
     *   `otp` / `otpExpiry`: Temporary, rotating passwords securing the account without long-term hashes.
