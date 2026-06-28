@@ -1,6 +1,6 @@
 # 🚀 TaskFlow & Smart Scheduler: Project Evaluation Guide
 
-This document is designed to help you explain your project confidently during your evaluation. It breaks down the core architecture, the purpose of each file and folder, the database schema, and key functionalities.
+
 
 ---
 
