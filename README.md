@@ -9,6 +9,9 @@ Natural Language Processing (NLP): The application understands human language. I
 Real-time Push Notifications: The system runs a background cron job (like a clock ticking every minute) that checks the database for overdue tasks. If tasks are due, it sends a web-push notification to the user's browser, even if they aren't actively looking at the tab.
 Cross-Platform Sync: The User has a standalone Chrome Extension that shares the same authentication and database, meaning they can quick-capture tasks from anywhere on the web via a small popup overlay.
 OTP Security: Instead of traditional passwords, the system uses OTP (One Time Password) combined with JSON Web Tokens (JWT) for a modern, secure, passwordless authentication flow.
+
+
+
 📁 2. Folder and File Breakdown
 You can walk the evaluator through your codebase using the following structure.
 
@@ -41,8 +44,11 @@ Your custom Chrome Extension ensuring quick capture.
 
 manifest.json: The core settings file Chrome needs to understand what permissions and scripts to run (Uses Manifest V3 architecture).
 popup.html & popup.js: The UI and logic script when the user clicks the extension icon. It intercepts ss_token (JWT token) located in Chrome's Background Extension Storage to securely inject fast notes straight into the backend's taskRoute.
+
+
+
+
 🗄️ 3. Database Schema
-Be ready to explain how your data relates.
 
 User Collection (User.js):
 email: Distinct identifier.
