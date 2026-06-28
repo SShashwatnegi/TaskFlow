@@ -1,85 +1,119 @@
 document.addEventListener('DOMContentLoaded', () => {
   const authView = document.getElementById('auth-view');
-  const taskView = document.getElementById('task-view');
-  const tokenInput = document.getElementById('token-input');
-  const saveTokenBtn = document.getElementById('save-token-btn');
-  const taskInput = document.getElementById('task-input');
-  const addBtn = document.getElementById('add-btn');
-  const statusEl = document.getElementById('status');
+  const agentView = document.getElementById('agent-view');
+  const openAppBtn = document.getElementById('open-app-btn');
+  const chatInput = document.getElementById('chat-input');
+  const sendBtn = document.getElementById('send-btn');
+  const messagesContainer = document.getElementById('messages');
   
   // Check for token in storage
   chrome.storage.local.get(['token'], (result) => {
     if (result.token) {
-      showTaskView();
+      showAgentView();
     } else {
       showAuthView();
     }
   });
 
-  saveTokenBtn.addEventListener('click', () => {
-    const token = tokenInput.value.trim();
-    if (token) {
-      chrome.storage.local.set({ token }, () => {
-        showTaskView();
-        statusEl.textContent = 'Token saved.';
-        setTimeout(() => statusEl.textContent = '', 2000);
-      });
+  // Listen for changes in local storage
+  chrome.storage.onChanged.addListener((changes, namespace) => {
+    if (namespace === 'local' && changes.token) {
+      if (changes.token.newValue) {
+        showAgentView();
+      } else {
+        showAuthView();
+      }
     }
   });
 
-  addBtn.addEventListener('click', async () => {
-    const rawText = taskInput.value.trim();
-    if (!rawText) return;
+  openAppBtn.addEventListener('click', () => {
+    // Open the TaskFlow web app
+    chrome.tabs.create({ url: 'http://localhost:5173/' });
+  });
 
-    addBtn.disabled = true;
-    addBtn.textContent = 'Adding...';
+  // Enter key support
+  chatInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      sendMessage();
+    }
+  });
+
+  sendBtn.addEventListener('click', sendMessage);
+
+  async function sendMessage() {
+    const text = chatInput.value.trim();
+    if (!text) return;
+
+    // Add user message to UI
+    addMessage(text, 'user');
+    chatInput.value = '';
     
+    sendBtn.disabled = true;
+    chatInput.disabled = true;
+    
+    // Add loading message
+    const loadingId = 'loading-' + Date.now();
+    addMessage('Thinking...', 'system', loadingId);
+
     chrome.storage.local.get(['token'], async (result) => {
       const token = result.token;
       
       try {
-        const response = await fetch('http://localhost:5000/api/tasks', {
+        const response = await fetch('http://localhost:5000/api/agent/chat', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           },
-          body: JSON.stringify({ rawText })
+          body: JSON.stringify({ message: text })
         });
 
+        removeMessage(loadingId);
+
         if (response.ok) {
-          taskInput.value = '';
-          statusEl.style.color = '#22c55e';
-          statusEl.textContent = 'Task added successfully!';
-        } else if (response.status === 401) {
-          statusEl.style.color = '#ef4444';
-          statusEl.textContent = 'Unauthorized. Invalid token.';
+          const data = await response.json();
+          addMessage(data.reply, 'agent');
+        } else if (response.status === 401 || response.status === 400) {
+          addMessage('Unauthorized or expired session.', 'system');
           // Clear invalid token
           chrome.storage.local.remove('token', () => showAuthView());
         } else {
-          statusEl.style.color = '#ef4444';
-          statusEl.textContent = 'Failed to add task.';
+          const errData = await response.json().catch(() => ({}));
+          addMessage(errData.error || 'Failed to get response.', 'system');
         }
       } catch (err) {
-        statusEl.style.color = '#ef4444';
-        statusEl.textContent = 'Network error.';
+        removeMessage(loadingId);
+        addMessage('Network error. Is the server running?', 'system');
       }
 
-      addBtn.disabled = false;
-      addBtn.textContent = 'Add Task';
-      
-      setTimeout(() => statusEl.textContent = '', 3000);
+      sendBtn.disabled = false;
+      chatInput.disabled = false;
+      chatInput.focus();
     });
-  });
+  }
+
+  function addMessage(text, sender, id = null) {
+    const div = document.createElement('div');
+    div.className = `msg ${sender}`;
+    div.textContent = text;
+    if (id) div.id = id;
+    messagesContainer.appendChild(div);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  }
+
+  function removeMessage(id) {
+    const el = document.getElementById(id);
+    if (el) el.remove();
+  }
 
   function showAuthView() {
     authView.style.display = 'block';
-    taskView.style.display = 'none';
+    agentView.style.display = 'none';
   }
 
-  function showTaskView() {
+  function showAgentView() {
     authView.style.display = 'none';
-    taskView.style.display = 'block';
-    taskInput.focus();
+    agentView.style.display = 'block';
+    chatInput.focus();
   }
 });

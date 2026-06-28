@@ -4,6 +4,7 @@ import AuthPage from "./components/AuthPage";
 import { 
   MiniCal, MonthView, WeekView, TaskModal, DayPanel, NotifBell 
 } from "./components/SchedulerComponents";
+import AgentChat from "./components/AgentChat";
 import { 
   CAT, PRI, MONTHS, TODAY, 
   urlBase64ToUint8Array, parseNLP, detectPriority, detectCategory, fmtShort, fmtTime 
@@ -199,6 +200,7 @@ export default function App(){
 
       {selDay&&<DayPanel date={selDay} tasks={ft} onClose={()=>setSelDay(null)} onAdd={addTask} onToggle={togTask} onDelete={delTask} onEdit={t=>setEditTask(t)}/>}
       {(editTask||newTask)&&<TaskModal task={editTask||null} onSave={saveTask} onClose={()=>{setEditTask(null);setNewTask(false);}} onDelete={delTask}/>}
+      <AgentChat onRefresh={fetchTasks} />
     </div>
   );
 }

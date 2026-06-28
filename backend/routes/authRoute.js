@@ -1,5 +1,4 @@
 const express = require('express');
-const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcryptjs');
@@ -10,7 +9,7 @@ const router = express.Router();
 router.post('/login', async (req, res) => {
     const { email } = req.body;
     try {
-        let user = await User.findOne({ email });
+        let user = await User.findOne({ email });.0
         if (!user) {
             user = new User({ email });
         }

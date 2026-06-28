@@ -2,11 +2,11 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>TaskFlow</title>
+  <title>TaskFlow Agent</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
     body {
-      width: 300px;
+      width: 320px;
       font-family: 'Inter', sans-serif;
       margin: 0;
       padding: 16px;
@@ -20,27 +20,71 @@
       background: linear-gradient(135deg, #a78bfa 0%, #6366f1 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    textarea {
-      width: 100%;
-      height: 60px;
+    #auth-view {
+      text-align: center;
+    }
+    #messages {
+      height: 250px;
+      overflow-y: auto;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 8px;
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .msg {
+      max-width: 85%;
+      padding: 8px 12px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      word-wrap: break-word;
+    }
+    .msg.user {
+      align-self: flex-end;
+      background: #6366f1;
+      color: white;
+      border-bottom-right-radius: 2px;
+    }
+    .msg.agent {
+      align-self: flex-start;
+      background: rgba(255, 255, 255, 0.1);
+      color: #e2e8f0;
+      border-bottom-left-radius: 2px;
+    }
+    .msg.system {
+      align-self: center;
+      background: transparent;
+      color: #94a3b8;
+      font-size: 0.8rem;
+      font-style: italic;
+    }
+    .input-row {
+      display: flex;
+      gap: 8px;
+    }
+    input[type="text"] {
+      flex: 1;
       padding: 10px;
-      box-sizing: border-box;
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 8px;
       color: #fff;
       font-family: 'Inter', sans-serif;
-      resize: none;
       outline: none;
-      margin-bottom: 12px;
     }
-    textarea:focus {
+    input[type="text"]:focus {
       border-color: #6366f1;
     }
     button {
-      width: 100%;
-      padding: 10px;
+      padding: 10px 16px;
       background: #6366f1;
       color: white;
       border: none;
@@ -49,50 +93,44 @@
       cursor: pointer;
       font-family: 'Inter', sans-serif;
       transition: background 0.2s;
+      white-space: nowrap;
     }
     button:hover {
       background: #4f46e5;
     }
-    #status {
-      margin-top: 10px;
-      font-size: 0.85rem;
-      text-align: center;
-      min-height: 16px;
+    button:disabled {
+      background: #475569;
+      cursor: not-allowed;
     }
-    #token-section {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 12px;
+    /* Scrollbar */
+    #messages::-webkit-scrollbar {
+      width: 6px;
     }
-    #token-input {
-      padding: 8px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 8px;
-      color: #fff;
-      font-family: 'Inter', sans-serif;
-      outline: none;
+    #messages::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
     }
   </style>
 </head>
 <body>
-  <h3>TaskFlow</h3>
+  <h3>TaskFlow Agent</h3>
   
   <div id="auth-view" style="display: none;">
-    <div style="font-size: 0.8rem; color: #888; margin-bottom: 8px;">Please enter your JWT Token to sync:</div>
-    <div id="token-section">
-      <input type="password" id="token-input" placeholder="Paste token here..." />
-      <button id="save-token-btn" style="background: rgba(255,255,255,0.1);">Save Token</button>
+    <div style="font-size: 0.85rem; color: #aaa; margin-bottom: 12px;">
+      Please log in to the <strong>TaskFlow web app</strong> to sync your session.
     </div>
+    <button id="open-app-btn">Open TaskFlow</button>
   </div>
 
-  <div id="task-view" style="display: none;">
-    <textarea id="task-input" placeholder="E.g. Pay bills by 5pm tomorrow..."></textarea>
-    <button id="add-btn">Add Task</button>
+  <div id="agent-view" style="display: none;">
+    <div id="messages">
+      <div class="msg system">Welcome! Ask me to manage your tasks.</div>
+    </div>
+    <div class="input-row">
+      <input type="text" id="chat-input" placeholder="E.g. Clear my tasks..." autocomplete="off" />
+      <button id="send-btn">Send</button>
+    </div>
   </div>
-  
-  <div id="status"></div>
 
   <script src="popup.js"></script>
 </body>
